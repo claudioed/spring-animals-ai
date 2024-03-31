@@ -16,11 +16,12 @@ public class WeaviateAnimalsRepository implements AnimalRepository{
     }
     @Override
     public List<Animal> animals(String query) {
-        this.vectorStore.similaritySearch(
+        List<Document> documents = this.vectorStore.similaritySearch(
                 SearchRequest
                         .query(query)
                         .withTopK(5));
-        return null;
+        return documents.stream().map(document ->
+                new Animal(document.getMetadata().get("name").toString(), document.getMetadata().get("description").toString())).toList();
     }
 
     @Override
